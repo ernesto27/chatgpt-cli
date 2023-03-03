@@ -1,4 +1,4 @@
-module chatgpt-cli
+module github.com/ernesto27/chatgpt-cli
 
 go 1.19
 
