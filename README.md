@@ -43,9 +43,7 @@ https://github.com/ernesto27/chatgpt-cli/releases
 
 
 
-
-
-## Develop run
+## Develop run 
  
 ```sh
 go run .
