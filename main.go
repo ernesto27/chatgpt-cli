@@ -14,26 +14,6 @@ import (
 )
 
 func main() {
-	// c := gogpt.NewClient("")
-
-	// resp, err := c.CreateChatCompletion(
-	// 	context.Background(),
-	// 	gogpt.ChatCompletionRequest{
-	// 		Model: gogpt.GPT3Dot5Turbo,
-	// 		Messages: []gogpt.ChatCompletionMessage{
-	// 			{
-	// 				Role:    "user",
-	// 				Content: "how to make a http request",
-	// 			},
-	// 		},
-	// 	},
-	// )
-
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// fmt.Println(resp.Choices[0].Message.Content, err)
 
 	p := tea.NewProgram(initialModel())
 	if _, err := p.Run(); err != nil {
@@ -49,6 +29,7 @@ type (
 type model struct {
 	textInput textinput.Model
 	glamour   bool
+	content   string
 	err       error
 }
 
@@ -76,7 +57,30 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyEnter:
-			return model{glamour: true, textInput: m.textInput}, nil
+			c := gogpt.NewClient("")
+
+			resp, err := c.CreateChatCompletion(
+				context.Background(),
+				gogpt.ChatCompletionRequest{
+					Model: gogpt.GPT3Dot5Turbo,
+					Messages: []gogpt.ChatCompletionMessage{
+						{
+							Role:    "user",
+							Content: m.textInput.Value(),
+						},
+					},
+				},
+			)
+
+			if err != nil {
+				panic(err)
+			}
+			return model{
+					glamour:   true,
+					textInput: m.textInput,
+					content:   resp.Choices[0].Message.Content,
+				},
+				tea.ClearScreen
 		case tea.KeyCtrlC:
 			return m, tea.Quit
 		case tea.KeyEsc:
@@ -100,38 +104,16 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m model) View() string {
 	if m.glamour {
-		// TODO FIX THIS
-		fmt.Println("CALLING VIEW")
 
-		c := gogpt.NewClient("")
-
-		resp, err := c.CreateChatCompletion(
-			context.Background(),
-			gogpt.ChatCompletionRequest{
-				Model: gogpt.GPT3Dot5Turbo,
-				Messages: []gogpt.ChatCompletionMessage{
-					{
-						Role:    "user",
-						Content: m.textInput.Value(),
-					},
-				},
-			},
-		)
-
-		if err != nil {
-			panic(err)
-		}
-
-		// Show the glamour model here
 		in := `## Response 
 		
-## ` + resp.Choices[0].Message.Content +
+## ` + m.content +
 			`
 ## Press Ctrl+C or Esc to exit`
 
-		const width = 300
+		const width = 100
 
-		vp := viewport.New(width, 200)
+		vp := viewport.New(width, 100)
 		vp.Style = lipgloss.NewStyle().
 			BorderStyle(lipgloss.RoundedBorder()).
 			BorderForeground(lipgloss.Color("62")).
