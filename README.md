@@ -37,11 +37,15 @@ AUTH_TOKEN_OPEN_AI=mykey
 ```
 
 
+## Download release
+
+https://github.com/ernesto27/chatgpt-cli/releases
 
 
 
 
-## Develop init
+
+## Develop run
  
 ```sh
 go run .
