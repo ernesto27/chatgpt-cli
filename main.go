@@ -65,6 +65,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyEnter:
 			c := gogpt.NewClient(os.Getenv("AUTH_TOKEN"))
 
+			fmt.Println()
+			fmt.Println("Sending request to GPT3, wait a moment ...")
+
 			resp, err := c.CreateChatCompletion(
 				context.Background(),
 				gogpt.ChatCompletionRequest{
