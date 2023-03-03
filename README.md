@@ -13,7 +13,7 @@ https://platform.openai.com/
 
 ## Environment variables setup
 
-You must configure a  env variable in your OS.
+You have to configure a env variable in your OS.
 
 Example
 
