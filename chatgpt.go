@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"log"
+	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -16,7 +16,8 @@ type chatGPT struct {
 func New() *chatGPT {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		fmt.Println(".env file not found, using system environment variables")
+		fmt.Println()
 	}
 
 	return &chatGPT{
