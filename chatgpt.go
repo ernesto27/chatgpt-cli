@@ -20,7 +20,7 @@ func New() *chatGPT {
 	}
 
 	return &chatGPT{
-		gogptClient: gogpt.NewClient(os.Getenv("AUTH_TOKEN")),
+		gogptClient: gogpt.NewClient(os.Getenv("AUTH_TOKEN_OPEN_AI")),
 	}
 }
 
