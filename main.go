@@ -4,16 +4,22 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/joho/godotenv"
 	gogpt "github.com/sashabaranov/go-gpt3"
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
 	p := tea.NewProgram(initialModel())
 	if _, err := p.Run(); err != nil {
@@ -35,7 +41,7 @@ type model struct {
 
 func initialModel() model {
 	ti := textinput.New()
-	ti.Placeholder = "Pikachu"
+	ti.Placeholder = "Your question"
 	ti.Focus()
 	ti.CharLimit = 200
 	ti.Width = 60
@@ -57,7 +63,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyEnter:
-			c := gogpt.NewClient("")
+			c := gogpt.NewClient(os.Getenv("AUTH_TOKEN"))
 
 			resp, err := c.CreateChatCompletion(
 				context.Background(),
@@ -105,15 +111,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m model) View() string {
 	if m.glamour {
 
-		in := `## Response 
-		
+		in := `## Response 	
 ## ` + m.content +
 			`
 ## Press Ctrl+C or Esc to exit`
 
 		const width = 100
 
-		vp := viewport.New(width, 100)
+		vp := viewport.New(width, 20)
 		vp.Style = lipgloss.NewStyle().
 			BorderStyle(lipgloss.RoundedBorder()).
 			BorderForeground(lipgloss.Color("62")).
@@ -137,7 +142,7 @@ func (m model) View() string {
 	}
 
 	return fmt.Sprintf(
-		"What’s your favorite Pokémon?\n\n%s\n\n%s",
+		"Ask to ChatGPT?\n\n%s\n\n%s",
 		m.textInput.View(),
 		"(press enter to see glamour model, esc to quit)",
 	) + "\n"
