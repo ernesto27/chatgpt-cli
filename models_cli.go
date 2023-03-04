@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/charmbracelet/bubbles/textarea"
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
@@ -15,18 +16,18 @@ type (
 )
 
 type model struct {
-	textInput    textinput.Model
+	textInput    textarea.Model
 	showResponse bool
 	content      string
 	err          error
 }
 
 func initialModel() model {
-	ti := textinput.New()
+	ti := textarea.New()
 	ti.Placeholder = "Your question"
+	ti.ShowLineNumbers = false
+	ti.SetHeight(10)
 	ti.Focus()
-	ti.CharLimit = 200
-	ti.Width = 60
 
 	return model{
 		textInput: ti,
@@ -35,7 +36,7 @@ func initialModel() model {
 }
 
 func (m model) Init() tea.Cmd {
-	return textinput.Blink
+	return tea.Batch(textinput.Blink, tea.ClearScreen)
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -44,8 +45,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.Type {
-		case tea.KeyEnter:
-
+		case tea.KeyCtrlP:
 			fmt.Println()
 			fmt.Println("Sending request to GPT3, wait a moment ...")
 			content, err := chatgpt.GetResponse(m.textInput.Value())
@@ -59,12 +59,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					content:      content,
 				},
 				tea.ClearScreen
-
 		case tea.KeyCtrlC:
 			return m, tea.Quit
 		case tea.KeyEsc:
 			return model{
-				textInput:    textinput.New(),
+				textInput:    textarea.New(),
 				showResponse: false,
 				err:          nil,
 			}, tea.ClearScreen
@@ -97,10 +96,11 @@ func (m model) View() string {
 		return str
 	}
 
+	tea.ClearScreen()
 	return fmt.Sprintf(
-		"Ask to ChatGPT?\n\n%s\n\n%s",
+		"Ask to ChatGPT\n\n%s\n\n%s",
 		m.textInput.View(),
-		"(press enter to see send question, ctrl/c to quit)",
+		"(press Ctrl+P to see send question, Ctrl+C to quit)",
 	) + "\n"
 }
 

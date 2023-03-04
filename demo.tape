@@ -2,7 +2,7 @@
 Output demo.gif
 
 # Set up a 1200x600 terminal with 46px font.
-Set FontSize 20
+Set FontSize 16
 Set Width 1200
 Set Height 800
 
@@ -12,12 +12,12 @@ Type "chatgptcli"
 Enter
 
 # Pause for dramatic effect...
-Sleep 500ms
+Sleep 1s
 
-Type "How goroutines works?"
+Type "How do I make an HTTP request in Golang?"
 
 # Run the command by pressing enter.
-Enter
+Ctrl+P
 
 # Admire the output for a bit.
-Sleep 15s
+Sleep 20s
