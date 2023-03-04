@@ -100,7 +100,7 @@ func (m model) View() string {
 	return fmt.Sprintf(
 		"Ask to ChatGPT\n\n%s\n\n%s",
 		m.textInput.View(),
-		"(press Ctrl+P to see send question, Ctrl+C to quit)",
+		"(press Ctrl+P to send question, Ctrl+C to quit)",
 	) + "\n"
 }
 
