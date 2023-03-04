@@ -9,6 +9,8 @@ Set Height 800
 # Type a command in the terminal.
 Type "chatgptcli"
 
+Sleep 2s
+
 Enter
 
 # Pause for dramatic effect...
