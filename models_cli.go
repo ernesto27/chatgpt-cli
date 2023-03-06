@@ -24,7 +24,7 @@ type myViewport struct {
 func newViewport(in string) (*myViewport, error) {
 	const width = 120
 
-	vp := viewport.New(width, 40)
+	vp := viewport.New(width, 30)
 	vp.Style = lipgloss.NewStyle().
 		BorderStyle(lipgloss.RoundedBorder()).
 		BorderForeground(lipgloss.Color("62")).
